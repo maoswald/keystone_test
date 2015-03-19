@@ -25,7 +25,7 @@ Post.add({
 	},
 	categories: { type: Types.Relationship, ref: 'PostCategory', many: true },
 
-	publishOnFacebook: { type: Types.Boolean }, //evtl immutable after post
+	publishOnFacebook: { type: Types.Boolean }, //maybe immutable after post
 	facebookText: { type: Types.Html, wysiwyg: false },
 	facebookPostId: { type: String }
 });
@@ -38,12 +38,12 @@ Post.schema.methods.isPublished = function() {
 	return this.state == 'published';
 };
 
-Post.schema.pre('save', function(next) {	
+Post.schema.post('save', function() {	
 	var facebook = fb(process.env.FACEBOOK_ACCESS_TOKEN);
-	if(this.isModified('state') && this.isPublished() && this.publishOnFacebook && !this.facebookPostId && this.facebookText) {
-		facebook.createPost(this.facebookText);
+	if(this.isPublished() && this.publishOnFacebook && !this.facebookPostId && this.facebookText) {
+		var that = this;
+		facebook.createPost(this.facebookText, function (id) { that.facebookPostId = id; that.save(); });
 	}
-	next();
 });
 
 Post.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
