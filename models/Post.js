@@ -27,7 +27,7 @@ Post.add({
 
 	publishOnFacebook: { type: Types.Boolean }, //maybe immutable after post
 	facebookText: { type: Types.Html, wysiwyg: false },
-	facebookPostId: { type: String }
+	facebookPostId: { type: String, noedit: true, nocreate: true, nodelete: true }
 });
 
 Post.schema.virtual('content.full').get(function() {
