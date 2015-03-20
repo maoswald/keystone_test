@@ -13,10 +13,9 @@ var Post = new keystone.List('Post', {
 
 Post.add({
 	title: { type: String, required: true },
+	categories: { type: Types.Relationship, ref: 'PostCategory', many: true },
 	state: { type: Types.Select, options: 'draft, published, archived', default: 'draft', index: true },
-	author: { type: Types.Relationship, ref: 'User', index: true },
 	publishedDate: { type: Types.Date, index: true, dependsOn: { state: 'published' } },
-	image: { type: Types.CloudinaryImage },
 	content: {
 		heroImage: { type: Types.CloudinaryImage },
 		brief: { type: Types.Textarea, height: 150 },
